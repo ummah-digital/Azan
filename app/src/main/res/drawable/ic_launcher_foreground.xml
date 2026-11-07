@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Golden Radiant Outer Circle Ring -->
+    <path
+        android:strokeColor="#F3C623"
+        android:strokeWidth="1.8"
+        android:pathData="M54,20 A34,34 0 1,0 54,88 A34,34 0 1,0 54,20 Z"/>
+
+    <!-- Large Sleek Golden Crescent Moon -->
+    <path
+        android:fillColor="#F3C623"
+        android:pathData="M66,26 C50,26 38,38 38,54 C38,70 50,82 66,82 C71,82 75.5,80.5 79.5,78 C67,75.5 57,65 57,54 C57,43 67,32.5 79.5,30 C75.5,27.5 71,26 66,26 Z"/>
+
+    <!-- 3D Holy Kaaba Monument (Centered inside Crescent) -->
+    <!-- Kaaba Left Face (Charcoal #151718) -->
+    <path
+        android:fillColor="#151718"
+        android:pathData="M46,50 L56,55 L56,74 L46,69 Z"/>
+
+    <!-- Kaaba Right Face (Deep Obsidian #222526) -->
+    <path
+        android:fillColor="#222526"
+        android:pathData="M56,55 L66,50 L66,69 L56,74 Z"/>
+
+    <!-- Kaaba Roof (Soft highlight #383E3F) -->
+    <path
+        android:fillColor="#383E3F"
+        android:pathData="M56,46 L66,50 L56,55 L46,50 Z"/>
+
+    <!-- Golden Kiswah Belt (Hizam Left) -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M46,54 L56,59 L56,61.5 L46,56.5 Z"/>
+
+    <!-- Golden Kiswah Belt (Hizam Right) -->
+    <path
+        android:fillColor="#FFE890"
+        android:pathData="M56,59 L66,54 L66,56.5 L56,61.5 Z"/>
+
+    <!-- Holy Kaaba Golden Door (Bab al-Kaaba) -->
+    <path
+        android:fillColor="#FFD700"
+        android:pathData="M58,61 L63,58.5 L63,67 L58,69.5 Z"/>
+
+    <!-- 8-Pointed Golden Islamic Star (Rub el Hizb) at Top Right -->
+    <path
+        android:fillColor="#FFF6D6"
+        android:pathData="M70,30 L72,35 L77,35 L73,38 L74.5,43 L70,40 L65.5,43 L67,38 L63,35 L68,35 Z"/>
+
+    <!-- Bottom Pill 'AZAN' Banner -->
+    <path
+        android:fillColor="#0E251C"
+        android:strokeColor="#F3C623"
+        android:strokeWidth="1.2"
+        android:pathData="M40,78 L68,78 A5,5 0 0,1 73,83 L73,83 A5,5 0 0,1 68,88 L40,88 A5,5 0 0,1 35,83 L35,83 A5,5 0 0,1 40,78 Z"/>
+
+    <!-- Letter A -->
+    <path
+        android:fillColor="#F3C623"
+        android:pathData="M43,86 L44,81 L45.5,81 L46.5,86 L45.5,86 L45.2,84.5 L44.3,84.5 L44,86 Z M44.5,83.5 L45,83.5 L44.8,82.2 Z"/>
+
+    <!-- Letter Z -->
+    <path
+        android:fillColor="#F3C623"
+        android:pathData="M48.5,81 L52,81 L52,82 L49.8,85 L52,85 L52,86 L48.5,86 L48.5,85 L50.7,82 L48.5,82 Z"/>
+
+    <!-- Letter A -->
+    <path
+        android:fillColor="#F3C623"
+        android:pathData="M54,86 L55,81 L56.5,81 L57.5,86 L56.5,86 L56.2,84.5 L55.3,84.5 L55,86 Z M55.5,83.5 L56,83.5 L55.8,82.2 Z"/>
+
+    <!-- Letter N -->
+    <path
+        android:fillColor="#F3C623"
+        android:pathData="M59.5,81 L60.7,81 L62.5,84.5 L62.5,81 L63.5,81 L63.5,86 L62.3,86 L60.5,82.5 L60.5,86 L59.5,86 Z"/>
+
+</vector>

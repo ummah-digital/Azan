@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Qibla Finder</title>
+<style>
+  :root {
+    --bg1: #07120D;
+    --bg2: #0E251C;
+    --gold: #F3C623;
+    --gold-soft: #D4AF37;
+    --green: #2ECC71;
+    --red: #FF3B30;
+    --text: #F8FAF7;
+    --muted: #A5C9BD;
+    --card-bg: rgba(14, 37, 28, 0.7);
+    --border: rgba(243, 198, 35, 0.25);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: var(--text);
+    background: radial-gradient(circle at 50% 20%, var(--bg2), var(--bg1) 85%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 14px 16px;
+    min-height: 100%;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 6px;
+  }
+  h1 {
+    font-size: 18px;
+    letter-spacing: 2px;
+    font-weight: 700;
+    margin: 2px 0 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+  .sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin: 2px 0 8px;
+    text-align: center;
+    font-weight: 500;
+  }
+
+  .stats {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    max-width: 360px;
+    margin-bottom: 8px;
+  }
+  .card {
+    flex: 1;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px 4px;
+    text-align: center;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  }
+  .card .v {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--gold);
+    font-variant-numeric: tabular-nums;
+  }
+  .card .l {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 2px;
+    font-weight: 600;
+  }
+
+  .compass-wrap {
+    position: relative;
+    width: min(80vw, 305px);
+    aspect-ratio: 1;
+    margin: 4px 0 10px;
+  }
+  .compass-wrap.aligned .glow {
+    opacity: 1;
+    box-shadow: 0 0 50px 12px rgba(46,204,113,0.65), inset 0 0 35px rgba(46,204,113,0.4);
+  }
+  .glow {
+    position: absolute;
+    inset: -6px;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity .35s ease, box-shadow .35s ease;
+  }
+
+  svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    filter: drop-shadow(0 10px 24px rgba(0,0,0,0.6));
+  }
+  #dial {
+    transition: transform 0.1s linear;
+    transform-origin: 170px 170px;
+  }
+
+  /* Fixed pointer at top of compass bezel pointing directly down into dial */
+  .pointer-top {
+    position: absolute;
+    top: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 18px solid var(--gold);
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.8));
+    z-index: 5;
+  }
+
+  .status-badge {
+    display: inline-block;
+    padding: 7px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    min-height: 36px;
+    line-height: 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    color: var(--gold);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.3);
+  }
+  .status-badge.ok {
+    background: rgba(46, 204, 113, 0.2);
+    border-color: var(--green);
+    color: #4EFA96;
+    box-shadow: 0 0 20px rgba(46,204,113,0.4);
+  }
+
+  .hint {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 6px;
+    max-width: 300px;
+    line-height: 1.4;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Qibla Compass</h1>
+  <div class="sub" id="loc">Detecting location...</div>
+</div>
+
+<div class="stats">
+  <div class="card"><div class="v" id="qiblaVal">--°</div><div class="l">Qibla Bearing</div></div>
+  <div class="card"><div class="v" id="headVal">0°</div><div class="l">Phone Heading</div></div>
+  <div class="card"><div class="v" id="distVal">--</div><div class="l">Km to Makkah</div></div>
+</div>
+
+<div class="compass-wrap" id="wrap">
+  <div class="glow"></div>
+  <div class="pointer-top"></div>
+  <svg viewBox="0 0 340 340">
+    <defs>
+      <radialGradient id="faceGrad" cx="50%" cy="45%" r="60%">
+        <stop offset="0%" stop-color="#133827"/>
+        <stop offset="70%" stop-color="#081B12"/>
+        <stop offset="100%" stop-color="#040F0A"/>
+      </radialGradient>
+      <linearGradient id="goldGrad" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#FFF2A8"/>
+        <stop offset="40%" stop-color="#F3C623"/>
+        <stop offset="100%" stop-color="#B58711"/>
+      </linearGradient>
+    </defs>
+
+    <!-- Outer Bezel Rings -->
+    <circle cx="170" cy="170" r="166" fill="url(#faceGrad)" stroke="url(#goldGrad)" stroke-width="4"/>
+    <circle cx="170" cy="170" r="160" fill="none" stroke="rgba(243, 198, 35, 0.35)" stroke-width="1"/>
+    <circle cx="170" cy="170" r="126" fill="none" stroke="rgba(46, 204, 113, 0.3)" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+    <!-- Rotating Dial (N/E/S/W, Ticks & Qibla Pointer) -->
+    <g id="dial">
+      <!-- Degree Ticks -->
+      <g id="ticks"></g>
+
+      <!-- Cardinal Directions -->
+      <!-- North (Prominent Red) -->
+      <polygon points="170,30 162,44 178,44" fill="#FF3B30"/>
+      <text x="170" y="62" text-anchor="middle" fill="#FF4444" font-size="24" font-weight="800" font-family="sans-serif">N</text>
+
+      <!-- East -->
+      <text x="295" y="178" text-anchor="middle" fill="#FFFFFF" font-size="20" font-weight="700" font-family="sans-serif">E</text>
+
+      <!-- South -->
+      <text x="170" y="298" text-anchor="middle" fill="#FFFFFF" font-size="20" font-weight="700" font-family="sans-serif">S</text>
+
+      <!-- West -->
+      <text x="45" y="178" text-anchor="middle" fill="#FFFFFF" font-size="20" font-weight="700" font-family="sans-serif">W</text>
+
+      <!-- Intercardinal Directions (NE, SE, SW, NW) -->
+      <text x="255" y="92" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="12" font-weight="600" font-family="sans-serif">NE</text>
+      <text x="255" y="260" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="12" font-weight="600" font-family="sans-serif">SE</text>
+      <text x="85" y="260" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="12" font-weight="600" font-family="sans-serif">SW</text>
+      <text x="85" y="92" text-anchor="middle" fill="rgba(255,255,255,0.45)" font-size="12" font-weight="600" font-family="sans-serif">NW</text>
+
+      <!-- DYNAMIC QIBLA MARKER (Rotated on the dial to exact Qibla Bearing) -->
+      <g id="qiblaMarker">
+        <!-- Radiant Gold/Red Pointer Line from center to Kaaba -->
+        <line x1="170" y1="170" x2="170" y2="76" stroke="url(#goldGrad)" stroke-width="4.5" stroke-linecap="round"/>
+        <line x1="170" y1="170" x2="170" y2="82" stroke="#FF3B30" stroke-width="2" stroke-linecap="round"/>
+
+        <!-- Arrowhead pointing to Kaaba -->
+        <polygon points="170,60 159,84 181,84" fill="url(#goldGrad)"/>
+
+        <!-- 3D Holy Kaaba Monument on the perimeter ring -->
+        <g id="kaabaIcon" transform="translate(155, 24)">
+          <!-- Kaaba base cube shadow -->
+          <rect x="0" y="2" width="30" height="30" rx="3" fill="#000000" opacity="0.5"/>
+          <!-- Kaaba main cubic body -->
+          <rect x="0" y="0" width="30" height="30" rx="3" fill="#121313" stroke="url(#goldGrad)" stroke-width="1.8"/>
+          <!-- Golden Kiswa Belt (Hizam) -->
+          <rect x="0" y="7" width="30" height="5" fill="url(#goldGrad)"/>
+          <!-- Kiswa lower embroidered medallions -->
+          <rect x="4" y="16" width="3" height="3" fill="url(#goldGrad)" opacity="0.8"/>
+          <rect x="10" y="16" width="3" height="3" fill="url(#goldGrad)" opacity="0.8"/>
+          <rect x="16" y="16" width="3" height="3" fill="url(#goldGrad)" opacity="0.8"/>
+          <rect x="22" y="16" width="3" height="3" fill="url(#goldGrad)" opacity="0.8"/>
+          <!-- Holy Golden Door (Bab ar-Rahmah / Bab al-Kaaba) -->
+          <rect x="18" y="14" width="7" height="13" rx="1" fill="url(#goldGrad)" stroke="#614500" stroke-width="0.5"/>
+          <!-- Roof edge highlight -->
+          <line x1="1" y1="1" x2="29" y2="1" stroke="#FFFFFF" stroke-width="0.8" opacity="0.6"/>
+        </g>
+      </g>
+    </g>
+
+    <!-- Center Pivot Hub with Emerald & Gold Jewels -->
+    <circle cx="170" cy="170" r="12" fill="url(#goldGrad)" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.6))"/>
+    <circle cx="170" cy="170" r="7" fill="#0A2518"/>
+    <circle cx="170" cy="170" r="3.5" fill="#2ECC71"/>
+  </svg>
+</div>
+
+<div class="status-badge" id="status">Hold phone flat & turn</div>
+<div class="hint" id="hint">Turn until the Golden Kaaba marker aligns with the top golden pointer.</div>
+
+<script>
+(function () {
+  var KAABA = { lat: 21.422487, lon: 39.826206 };
+  var state = { lat: 26.2285, lon: 50.5860, qibla: 246.2, heading: 0, smooth: 0 };
+
+  var $ = function (id) { return document.getElementById(id); };
+  var dial = $('dial'), marker = $('qiblaMarker'), wrap = $('wrap');
+
+  // Build high precision tick marks (every 5 degrees, major every 30)
+  var ticks = $('ticks'), html = '';
+  for (var i = 0; i < 360; i += 5) {
+    var major = i % 30 === 0;
+    var len = major ? 13 : 7;
+    var color = major ? '#F3C623' : 'rgba(255,255,255,0.32)';
+    var strokeW = major ? 2 : 1;
+    html += '<line x1="170" y1="44" x2="170" y2="' + (44 + len) +
+      '" stroke="' + color + '" stroke-width="' + strokeW +
+      '" transform="rotate(' + i + ' 170 170)"/>';
+  }
+  ticks.innerHTML = html;
+
+  function rad(d) { return d * Math.PI / 180; }
+  function deg(r) { return r * 180 / Math.PI; }
+
+  // Great-circle initial bearing to Kaaba
+  function qiblaBearing(lat, lon) {
+    var p1 = rad(lat), p2 = rad(KAABA.lat), dl = rad(KAABA.lon - lon);
+    var y = Math.sin(dl) * Math.cos(p2);
+    var x = Math.cos(p1) * Math.sin(p2) - Math.sin(p1) * Math.cos(p2) * Math.cos(dl);
+    return (deg(Math.atan2(y, x)) + 360) % 360;
+  }
+
+  // Haversine distance in km
+  function distanceKm(lat, lon) {
+    var R = 6371, dLat = rad(KAABA.lat - lat), dLon = rad(KAABA.lon - lon);
+    var a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(rad(lat)) * Math.cos(rad(KAABA.lat)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  }
+
+  function setLocation(lat, lon, label) {
+    if (lat == null || lon == null) return;
+    state.lat = lat;
+    state.lon = lon;
+    state.qibla = qiblaBearing(lat, lon);
+    $('qiblaVal').textContent = state.qibla.toFixed(1) + '°';
+    $('distVal').textContent = Math.round(distanceKm(lat, lon)).toLocaleString() + ' km';
+    $('loc').textContent = label || ('Lat ' + lat.toFixed(4) + '°, Lon ' + lon.toFixed(4) + '°');
+    marker.setAttribute('transform', 'rotate(' + state.qibla + ' 170 170)');
+    render();
+  }
+
+  function setHeading(h) {
+    if (h == null || isNaN(h)) return;
+    h = (h + 360) % 360;
+    if (state.smooth == null) {
+      state.smooth = h;
+    } else {
+      var diff = ((h - state.smooth + 540) % 360) - 180;
+      state.smooth = (state.smooth + diff * 0.25 + 360) % 360;
+    }
+    state.heading = state.smooth;
+    render();
+  }
+
+  var spin = 0, last = null;
+  function render() {
+    if (state.heading == null) return;
+    var target = -state.heading;
+    if (last == null) {
+      spin = target;
+    } else {
+      var d = ((target - last + 540) % 360) - 180;
+      spin += d;
+    }
+    last = target;
+    dial.style.transform = 'rotate(' + spin + 'deg)';
+    $('headVal').textContent = Math.round(state.heading) + '°';
+
+    if (state.qibla != null) {
+      var off = ((state.qibla - state.heading + 540) % 360) - 180;
+      var aligned = Math.abs(off) <= 3.5;
+      wrap.classList.toggle('aligned', aligned);
+      var st = $('status');
+      st.className = 'status-badge' + (aligned ? ' ok' : '');
+      if (aligned) {
+        st.textContent = '✓ Facing Holy Kaaba!';
+        if (navigator.vibrate && !render.v) {
+          navigator.vibrate(80);
+          render.v = true;
+        }
+      } else {
+        render.v = false;
+        var turnAmt = Math.round(Math.abs(off));
+        if (off > 0) {
+          st.textContent = 'Turn right ' + turnAmt + '° ➔';
+        } else {
+          st.textContent = '⬅ Turn left ' + turnAmt + '°';
+        }
+      }
+    }
+  }
+
+  // Device orientation fallback
+  function onOrientation(e) {
+    var h = null;
+    if (typeof e.webkitCompassHeading === 'number') {
+      h = e.webkitCompassHeading;
+    } else if (e.absolute && e.alpha != null) {
+      h = 360 - e.alpha;
+    } else if (e.alpha != null) {
+      h = 360 - e.alpha;
+    }
+    if (h != null) setHeading(h);
+  }
+
+  if ('ondeviceorientationabsolute' in window) {
+    window.addEventListener('deviceorientationabsolute', onOrientation, true);
+  } else if ('ondeviceorientation' in window) {
+    window.addEventListener('deviceorientation', onOrientation, true);
+  }
+
+  // Native Android hooks
+  window.setHeading = setHeading;
+  window.setLocation = function (lat, lon, label) { setLocation(lat, lon, label); };
+
+  // Initialize with default (Bahrain)
+  setLocation(26.2285, 50.5860, 'Manama, Bahrain');
+})();
+</script>
+</body>
+</html>

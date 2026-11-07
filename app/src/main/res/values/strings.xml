@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Azan</string>
+    <string name="notification_channel_name">Azan Prayer Time Alerts</string>
+    <string name="notification_channel_desc">Notifications and Azan audio for 5 daily prayer times</string>
+</resources>

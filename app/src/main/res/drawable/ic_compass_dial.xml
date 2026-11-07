@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+    <!-- Outer Rim -->
+    <path
+        android:strokeColor="#255C46"
+        android:strokeWidth="3"
+        android:pathData="M100,10 A90,90 0 1,0 100,190 A90,90 0 1,0 100,10 Z"/>
+    <path
+        android:strokeColor="#F3C623"
+        android:strokeWidth="1"
+        android:pathData="M100,18 A82,82 0 1,0 100,182 A82,82 0 1,0 100,18 Z"/>
+    <!-- Cardinal Marks -->
+    <!-- North -->
+    <path
+        android:fillColor="#E53935"
+        android:pathData="M97,25 L103,25 L100,15 Z"/>
+    <!-- South -->
+    <path
+        android:fillColor="#A3C0B4"
+        android:pathData="M97,175 L103,175 L100,185 Z"/>
+    <!-- East -->
+    <path
+        android:fillColor="#A3C0B4"
+        android:pathData="M175,97 L175,103 L185,100 Z"/>
+    <!-- West -->
+    <path
+        android:fillColor="#A3C0B4"
+        android:pathData="M25,97 L25,103 L15,100 Z"/>
+</vector>

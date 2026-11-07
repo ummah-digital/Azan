@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary_emerald">#0A3B2C</color>
+    <color name="primary_emerald_dark">#062319</color>
+    <color name="accent_gold">#F3C623</color>
+    <color name="accent_gold_rich">#D4AF37</color>
+    <color name="background_dark">#08140E</color>
+    <color name="card_dark">#0E241B</color>
+    <color name="surface_tint">#133124</color>
+    <color name="text_white">#F5F8F6</color>
+    <color name="text_muted">#A3C0B4</color>
+</resources>

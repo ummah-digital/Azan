@@ -1,0 +1,36 @@
+# ==========================================
+# Ummah Digital - Azan Application .gitignore
+# ==========================================
+
+# Built application files
+*.apk
+!docs/*.apk
+*.aar
+*.aab
+
+# Gradle files & caches
+.gradle/
+build/
+app/build/
+.kotlin/
+
+# Local configuration & Keystores (NEVER COMMIT)
+local.properties
+*.keystore
+*.jks
+key.properties
+keystore.properties
+
+# Android Studio & IntelliJ IDE
+.idea/
+*.iml
+captures/
+.externalNativeBuild/
+.cxx/
+GeneratedPluginRegistrant.java
+
+# OS specific
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
